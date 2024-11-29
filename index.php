@@ -6,7 +6,7 @@
         <?php include('templates/hero_section.php'); ?>
         
         <!-- Main Content -->
-        <div class="row mt-5">
+        <div class="row mt-3">
             <div class="col-md-16">
                 <?php include('templates/file_upload.php'); ?>
             </div>

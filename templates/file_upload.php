@@ -22,6 +22,15 @@
                     </div>
                     <small class="text-muted mt-2" id="uploadStatusText"></small>
                 </div>
+                        <!-- Analysis Status -->
+        <div class="mt-4" id="analysisStatus" style="display: none;">
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <div class="spinner-border text-primary mb-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span id="analysisStatusText">Analyzing your code...</span>
+            </div>
+        </div>
                 <div class="d-grid mt-4">
                     <button class="btn btn-primary btn-lg" id="generateBtn" disabled="">
                         <i class="fas fa-magic me-2"></i>Generate Prompt

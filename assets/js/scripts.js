@@ -241,80 +241,65 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Generate Button Handler
     if (generateBtn) {
-        generateBtn.addEventListener('click', () => {
+        generateBtn.addEventListener('click', async function() {
             const base64Image = localStorage.getItem('currentImage');
             if (!base64Image) {
                 alert('Please upload an image first.');
                 return;
             }
 
-            // Show the analysis status when generate is clicked
-            if (analysisStatus) {
-                analysisStatus.style.display = 'block';
-            }
+            // Disable generate button and show analysis status
+            generateBtn.disabled = true;
+            analysisStatus.style.display = 'block';
 
-            fetch('process.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    image: base64Image
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                const promptData = {
-                    prompt: data.prompt,
-                    timestamp: new Date().toISOString()
-                };
-                const savedPrompts = JSON.parse(localStorage.getItem('recentPrompts') || '[]');
-                savedPrompts.unshift(promptData);
-                if (savedPrompts.length > 10) savedPrompts.pop();
-                localStorage.setItem('recentPrompts', JSON.stringify(savedPrompts));
-                window.createPromptCard(promptData);
-                updatePromptCounter();
+            try {
+                const response = await fetch('process.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        image: base64Image
+                    })
+                });
 
-                // Clear the stored image
-                localStorage.removeItem('currentImage');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
                 
-                // Hide the analysis status after prompt is received
-                if (analysisStatus) {
-                    analysisStatus.style.display = 'none';
-                }
+                if (result.success) {
+                    // Add prompt to history and update display
+                    const promptData = {
+                        prompt: result.prompt,
+                        timestamp: new Date().toISOString()
+                    };
+                    const savedPrompts = JSON.parse(localStorage.getItem('recentPrompts') || '[]');
+                    savedPrompts.unshift(promptData);
+                    if (savedPrompts.length > 10) savedPrompts.pop();
+                    localStorage.setItem('recentPrompts', JSON.stringify(savedPrompts));
+                    window.createPromptCard(promptData);
+                    updatePromptCounter();
 
-                // Clear progress bar and status
-                if (uploadStatus) {
-                    uploadStatus.style.display = 'none';
+                    // Clear the stored image
+                    localStorage.removeItem('currentImage');
+                    
+                    // Hide the analysis status after prompt is received
+                    analysisStatus.style.display = 'none';
+                } else {
+                    throw new Error(result.error || 'Failed to generate prompt');
                 }
-                if (progressBar) {
-                    progressBar.style.width = '0%';
-                }
-                if (uploadStatusText) {
-                    uploadStatusText.textContent = '';
-                }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to generate prompt. Please try again.');
                 
                 // Hide the analysis status on error
-                if (analysisStatus) {
-                    analysisStatus.style.display = 'none';
-                }
-
-                // Clear progress bar and status on error
-                if (uploadStatus) {
-                    uploadStatus.style.display = 'none';
-                }
-                if (progressBar) {
-                    progressBar.style.width = '0%';
-                }
-                if (uploadStatusText) {
-                    uploadStatusText.textContent = '';
-                }
-            });
+                analysisStatus.style.display = 'none';
+            } finally {
+                // Re-enable generate button after prompt is received or error occurs
+                generateBtn.disabled = false;
+            }
         });
     }
 });

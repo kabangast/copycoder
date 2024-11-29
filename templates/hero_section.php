@@ -5,9 +5,9 @@
         <button class="btn btn-primary btn-lg" id="viewDemoBtn">
             <i class="fas fa-play-circle me-2"></i>View Demo
         </button>
-        <button class="btn btn-outline-light btn-lg" id="learnMoreBtn">
-            <i class="fas fa-info-circle me-2"></i>Learn More
-        </button>
+        <a href="https://github.com/kabangast/copycoder" target="_blank" class="btn btn-outline-light btn-lg">
+            <i class="fab fa-github me-2"></i>View on GitHub
+        </a>
     </div>
 </div>
 
