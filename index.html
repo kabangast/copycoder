@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image and Analyze</title>
+    <style>
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Image to Analyze</h1>
+    <form id="uploadForm">
+        <label for="image">Select an image:</label>
+        <input type="file" name="image" id="image" accept="image/*" required>
+        <br><br>
+        <button type="submit">Analyze Image</button>
+    </form>
+
+    <div id="loading" class="loading">Processing your image...</div>
+    <div id="result" class="result"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const imageFile = document.getElementById('image').files[0];
+            
+            // Show loading message
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            // Convert image to base64
+            const reader = new FileReader();
+            reader.readAsDataURL(imageFile);
+            reader.onload = function() {
+                const base64Image = reader.result;
+                
+                // Send AJAX request
+                fetch('process.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        image: base64Image
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading message
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // Show result
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                })
+                .catch(error => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('result').innerHTML = 'Error: ' + error.message;
+                });
+            };
+        });
+    </script>
+</body>
+</html>

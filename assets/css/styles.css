@@ -1,0 +1,225 @@
+/* Custom Variables */
+:root {
+    --primary-color: #6366F1;
+    --secondary-color: #1E293B;
+    --background-color: #000D14;
+    --accent-color: #3B82F6;
+}
+
+/* General Styles */
+body {
+    background-color: var(--background-color);
+    color: #FFFFFF;
+}
+
+/* Upload Zone Styles */
+.upload-zone {
+    min-height: 250px;
+    border-style: dashed !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.upload-zone:hover {
+    border-color: var(--primary-color) !important;
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+.upload-zone.dragover {
+    border-color: var(--primary-color) !important;
+    background-color: rgba(99, 102, 241, 0.2);
+}
+
+.upload-zone .fa-cloud-upload-alt {
+    color: var(--primary-color);
+    transition: transform 0.3s ease;
+}
+
+.upload-zone:hover .fa-cloud-upload-alt {
+    transform: translateY(-5px);
+}
+
+.upload-text {
+    line-height: 1.8;
+}
+
+/* Custom Form Styles */
+.form-select {
+    cursor: pointer;
+}
+
+.form-select option {
+    background-color: var(--background-color);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #5558DD;
+    border-color: #5558DD;
+}
+
+/* Card Styles */
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Recent Prompts Styles */
+.text-light-gray {
+    color: #a0aec0 !important;
+}
+
+.bg-darker {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.prompt-content {
+    font-size: 0.95rem;
+}
+
+.prompt-result pre {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.prompt-result pre code {
+    display: block;
+    line-height: 1.6;
+}
+
+.prompt-result pre::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.prompt-result pre::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.prompt-result pre::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.prompt-result pre::-webkit-scrollbar-thumb:hover {
+    background: #5558DD;
+}
+
+.card-footer {
+    font-size: 0.85rem;
+}
+
+/* Copy Button Styles */
+.btn-copy {
+    padding: 4px 8px;
+    color: #a0aec0;
+    background: transparent;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-copy:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.btn-copy.copied {
+    color: #10B981;
+    animation: popScale 0.3s ease;
+}
+
+.btn-copy.copy-error {
+    color: #EF4444;
+    animation: shake 0.5s ease;
+}
+
+/* Copy Button Animations */
+@keyframes popScale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+/* Prompt Card Animations */
+.prompt-card-animation {
+    animation: slideIn 0.3s ease-out;
+}
+
+.prompt-card-remove {
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* Delete Button Styles */
+.delete-prompt {
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.delete-prompt:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Tooltip Customization */
+.tooltip .tooltip-inner {
+    background-color: var(--secondary-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: var(--secondary-color);
+}
+
+/* Animation for Loading States */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
+}
