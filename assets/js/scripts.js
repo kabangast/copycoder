@@ -253,14 +253,17 @@ document.addEventListener('DOMContentLoaded', function() {
             analysisStatus.style.display = 'block';
 
             try {
-                const response = await fetch('process.php', {
+                // Convert base64 to blob
+                const base64Response = await fetch(base64Image);
+                const blob = await base64Response.blob();
+
+                // Create FormData and append the blob as a file
+                const formData = new FormData();
+                formData.append('image', blob, 'image.jpg');
+
+                const response = await fetch('gemini-1.5-flash-latest.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        image: base64Image
-                    })
+                    body: formData
                 });
 
                 if (!response.ok) {
@@ -269,27 +272,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const result = await response.json();
                 
-                if (result.success) {
-                    // Add prompt to history and update display
-                    const promptData = {
-                        prompt: result.prompt,
-                        timestamp: new Date().toISOString()
-                    };
-                    const savedPrompts = JSON.parse(localStorage.getItem('recentPrompts') || '[]');
-                    savedPrompts.unshift(promptData);
-                    if (savedPrompts.length > 10) savedPrompts.pop();
-                    localStorage.setItem('recentPrompts', JSON.stringify(savedPrompts));
-                    window.createPromptCard(promptData);
-                    updatePromptCounter();
+                // Extract text from Gemini API response format
+                const analysisText = result.candidates[0].content.parts[0].text;
+                
+                // Add prompt to history and update display
+                const promptData = {
+                    prompt: analysisText,
+                    timestamp: new Date().toISOString()
+                };
+                const savedPrompts = JSON.parse(localStorage.getItem('recentPrompts') || '[]');
+                savedPrompts.unshift(promptData);
+                if (savedPrompts.length > 10) savedPrompts.pop();
+                localStorage.setItem('recentPrompts', JSON.stringify(savedPrompts));
+                window.createPromptCard(promptData);
+                updatePromptCounter();
 
-                    // Clear the stored image
-                    localStorage.removeItem('currentImage');
-                    
-                    // Hide the analysis status after prompt is received
-                    analysisStatus.style.display = 'none';
-                } else {
-                    throw new Error(result.error || 'Failed to generate prompt');
-                }
+                // Clear the stored image
+                localStorage.removeItem('currentImage');
+                
+                // Hide the analysis status after prompt is received
+                analysisStatus.style.display = 'none';
             } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to generate prompt. Please try again.');
